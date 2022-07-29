@@ -57,7 +57,7 @@ public enum Arena {
         }
     }
 
-    
+
 
     public int getStartRow(){
         return startRow;
