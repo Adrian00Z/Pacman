@@ -33,6 +33,13 @@ public class KeyListener implements java.awt.event.KeyListener {
             case KeyEvent.VK_S -> {
                 Game.start();
             }
+            case KeyEvent.VK_P -> {
+                if (Game.isPlaying){
+                    Game.isPlaying = false;
+                } else{
+                    Game.isPlaying = true;
+                }
+            }
             default -> {
 
             }

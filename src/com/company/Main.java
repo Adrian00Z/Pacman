@@ -8,7 +8,7 @@ import java.net.URL;
 public class Main {
 
     //TODO
-    //  Resizeable
+    //  speed Resizeable
     //  pauseOption
     //  goodOpponent
     public static Image image;

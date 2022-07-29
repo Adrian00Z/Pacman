@@ -7,7 +7,8 @@ public class Player extends Figure {
 
     public Player(Image image){
         super(image);
-        newDirection = Direction.RIGHT;
+        direction = Direction.DOWN;
+        newDirection = Direction.DOWN;
     }
 
     public void setNewDirection(Direction newDirection) {
@@ -22,5 +23,10 @@ public class Player extends Figure {
             }
         }
         super.go();
+    }
+
+    public void position(){
+        x = Game.arena.getWidthOfField() * Game.arena.getStartCol();
+        y = Game.arena.getHeightOfField() * Game.arena.getStartRow();
     }
 }

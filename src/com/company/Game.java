@@ -12,52 +12,29 @@ public class Game extends JPanel implements Runnable{
     public static Enemy enemy = new Enemy(Main.image2);
     private Date currentTime;
     private Date startTime;
-    public static boolean play = false;
+    public static boolean isPlaying = false;
 
 
     public Game(){
-        System.out.println(getHeight());
         arena = Arena.BasicArena;
-        Arena.heightOfField = this.getHeight()/arena.getRows();
-        Arena.widthOfField = this.getWidth()/arena.getCols();
+        arena.setHeightOfField(this.getHeight()/arena.getRows());
+        arena.setWidthOfField(this.getWidth()/arena.getCols());
 
         player = new Player(Main.image);
         enemy = new Enemy(Main.image2);
 
-        this.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                //player.setPositionRelatively(arena.getWidth(), arena.getHeight());
-                repaint();
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });
+        addComponentListener();
 
         Thread thread = new Thread(this);
         thread.start();
     }
 
     public static void start(){
-        player.start();
-        enemy.start();
+        player.position();
+        enemy.position();
 
-        play = true;
+        isPlaying = true;
     }
-
 
     @Override
     public void run() {
@@ -65,10 +42,7 @@ public class Game extends JPanel implements Runnable{
         startTime = new Date();
         while (true) {
             System.out.print("");
-            if(play) {
-                Arena.heightOfField = this.getHeight()/arena.getRows();
-                Arena.widthOfField = this.getWidth()/arena.getCols();
-
+            if(isPlaying) {
                 currentTime = new Date();
 
                 if ((currentTime.getTime() - startTime.getTime()) >= 10) {
@@ -90,20 +64,46 @@ public class Game extends JPanel implements Runnable{
         super.paint(g);
         Graphics2D g2D = (Graphics2D)g;
         //int[][] fields = arena.getStates();
-        Arena.heightOfField = this.getHeight()/arena.getRows();
-        Arena.widthOfField = this.getWidth()/arena.getCols();
 
         for (int rows = 0; rows < arena.getRows(); rows++) {
             for (int cols = 0; cols < arena.getCols(); cols++) {
-                if (arena.getStateOfField(rows, cols) == 0){
+                if (arena.getStateOfField(rows, cols) == Arena.State.WALL){
                     g2D.setColor(Color.BLACK);
                 } else {
                     g2D.setColor(Color.MAGENTA);
                 }
-                g2D.fillRect(Arena.widthOfField*cols, Arena.heightOfField*rows, Arena.widthOfField, Arena.heightOfField);
+                g2D.fillRect(arena.getWidthOfField()*cols, arena.getHeightOfField()*rows, arena.getWidthOfField(), arena.getHeightOfField());
             }
         }
         player.draw(g2D);
         enemy.draw(g2D);
+    }
+
+    public void addComponentListener(){
+        this.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Game.arena.setHeightOfField(e.getComponent().getHeight()/Game.arena.getRows());
+                Game.arena.setWidthOfField(e.getComponent().getWidth()/Game.arena.getCols());
+                Game.player.setPositionRelatively();
+                Game.enemy.setPositionRelatively();
+                repaint();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
     }
 }

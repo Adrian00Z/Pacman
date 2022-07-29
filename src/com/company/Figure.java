@@ -7,10 +7,10 @@ import java.awt.*;
 public class Figure extends JLabel {
 
     protected Direction direction;
-    private int x;
-    private double xPercent;
-    private int y;
-    private double yPercent;
+    protected int x;
+    private int xPercent;
+    protected int y;
+    protected int yPercent;
     private Image image;
 
     public Figure(Image image) {
@@ -18,22 +18,17 @@ public class Figure extends JLabel {
         setImage(image);
     }
 
-    public void start(){
-        x = Arena.widthOfField;
-        y = Arena.heightOfField;
-    }
-
     public void setImage(Image image) {
         this.image = image;
     }
     public int getRow() {
-        return y / Arena.heightOfField;
+        return y / Game.arena.getHeightOfField();
     }
     public int getCol() {
-        return x / Arena.widthOfField;
+        return x / Game.arena.getWidthOfField();
     }
     public boolean isOnField(){
-        return (x % Arena.widthOfField == 0) && (y % Arena.heightOfField == 0);
+        return (x % Game.arena.getWidthOfField() == 0) && (y % Game.arena.getHeightOfField() == 0);
     }
 
     public void go() {
@@ -66,37 +61,39 @@ public class Figure extends JLabel {
             }
         }
 
-        xPercent = x * 100 / (Arena.widthOfField * (Game.arena.getCols() - 1));
-        yPercent = y * 100 / (Arena.heightOfField * (Game.arena.getRows() - 1));
+        xPercent = x * 1_000_000 / (Game.arena.getWidthOfField() * (Game.arena.getCols() - 1));
+        yPercent = y * 1_000_000 / (Game.arena.getHeightOfField() * (Game.arena.getRows() - 1));
 
         //System.out.println(xPercent + ", " + yPercent);
     }
 
-
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     protected boolean canChangeDirection(Direction newDirection) {
-        return (Game.arena.getStateOfNextField(getRow(), getCol(), newDirection) == 1);
+        return (Game.arena.getStateOfNextField(getRow(), getCol(), newDirection).canGoOnThis());
     }
 
     public void draw(Graphics g) {
-        g.drawImage(image, x, y, Arena.widthOfField, Arena.heightOfField, null);
+        g.drawImage(image, x, y, Game.arena.getWidthOfField(), Game.arena.getHeightOfField(), null);
 
-        if (x > (Game.arena.getWidth() - Arena.widthOfField)){
-            g.drawImage(image, x - Game.arena.getWidth(), y, Arena.widthOfField, Arena.heightOfField, null);
+        if (x > (Game.arena.getWidth() - Game.arena.getWidthOfField())){
+            g.drawImage(image, x - Game.arena.getWidth(), y, Game.arena.getWidthOfField(), Game.arena.getHeightOfField(), null);
         }
-        if (y > (Game.arena.getHeight() - Arena.heightOfField)){
-            g.drawImage(image, x, y - Game.arena.getHeight(), Arena.widthOfField, Arena.heightOfField, null);
+        if (y > (Game.arena.getHeight() - Game.arena.getHeightOfField())){
+            g.drawImage(image, x, y - Game.arena.getHeight(), Game.arena.getWidthOfField(), Game.arena.getHeightOfField(), null);
         }
     }
 
     public boolean canGoNextField() {
-        return (Game.arena.getStateOfNextField(getRow(), getCol(), direction) == 1);
+        return (Game.arena.getStateOfNextField(getRow(), getCol(), direction).canGoOnThis());
     }
 
-    public void setPositionRelatively(int width, int height){
-        System.out.println(xPercent + ", " + width);
-        x = (int) (xPercent * width);
-        y = (int) (yPercent * height);
+    public void setPositionRelatively(){
+        x = 1 + (xPercent * (Game.arena.getWidthOfField() * (Game.arena.getCols() - 1))) / 1_000_000;
+        y = 1 + (yPercent * (Game.arena.getHeightOfField() * (Game.arena.getRows() - 1))) / 1_000_000;
     }
 
     public enum Direction {

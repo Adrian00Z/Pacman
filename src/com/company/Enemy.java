@@ -18,6 +18,11 @@ public class Enemy extends Figure {
         super.go();
     }
 
+    public void position(){
+        x = Game.arena.getWidthOfField();
+        y = Game.arena.getHeightOfField();
+    }
+
     protected void maybeChangeDirection() {
 
         ArrayList<Direction> possibleDirections = new ArrayList<>();
