@@ -97,15 +97,25 @@ public class Figure extends JLabel {
     }
 
     public enum Direction {
-        UP(false),
-        DOWN(false),
-        RIGHT(true),
-        LEFT(true);
+        UP(false, false),
+        DOWN(false, true),
+        RIGHT(true, true),
+        LEFT(true, false);
 
-        public boolean isHorizontal;
+        private final boolean isHorizontal;
+        private final boolean isGrowingPositively;
 
-        Direction(boolean isHorizontal){
+        Direction(boolean isHorizontal, boolean isGrowingPositively){
             this.isHorizontal = isHorizontal;
+            this.isGrowingPositively = isGrowingPositively;
+        }
+
+        public boolean isHorizontal() {
+            return isHorizontal;
+        }
+
+        public boolean isGrowingPositively() {
+            return isGrowingPositively;
         }
 
         protected Direction copy() {

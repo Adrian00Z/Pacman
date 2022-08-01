@@ -14,6 +14,8 @@ public class Game extends JPanel implements Runnable{
     private Date startTime;
     public static boolean isPlaying = false;
 
+    public int timeBetweenTick = 10;
+
 
     public Game(){
         arena = Arena.BasicArena;
@@ -45,8 +47,9 @@ public class Game extends JPanel implements Runnable{
             if(isPlaying) {
                 currentTime = new Date();
 
-                if ((currentTime.getTime() - startTime.getTime()) >= 10) {
-                    startTime = new Date();
+                if ((currentTime.getTime() - startTime.getTime()) >= timeBetweenTick) {
+                    System.out.println(currentTime.getTime() - startTime.getTime());
+                    startTime.setTime(startTime.getTime() + timeBetweenTick);
                     tick();
                 }
             }
